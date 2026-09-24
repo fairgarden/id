@@ -1,0 +1,22 @@
+# Grants
+
+What the signed-in person has agreed to share, service by service.
+
+| | |
+| --- | --- |
+| `GET grants` | a `GrantList` |
+| `DELETE grants/<name>` | remove a service's access |
+
+```json
+{
+  "kind": "Grant",
+  "spec": { "clientId": "events", "scopes": ["openid", "email"], "rejectedScopes": ["phone"] },
+  "status": {
+    "client": { "id": "events", "name": "Events", "uri": "https://events.example.com" },
+    "shared": [{ "name": "openid", "title": "Your account ID" }, { "name": "email", "title": "Email address" }]
+  }
+}
+```
+
+Deleting a grant revokes every token issued under it at once, and the service
+has to ask again next time.

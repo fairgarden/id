@@ -1,0 +1,58 @@
+# Commands
+
+Run from the module, `apps/id`.
+
+## The app
+
+```bash
+pnpm dev                 # http://localhost:3010
+pnpm build && pnpm start
+pnpm lint
+```
+
+## Database
+
+```bash
+pnpm db:status                     # what has run, and what is pending
+pnpm db:migrate                    # apply what is pending
+pnpm db:rollback [--steps N]       # undo the latest N (default 1)
+pnpm db:rollback --to TAG          # undo everything after TAG (0 for all)
+pnpm db:generate --name NAME       # write the next migration from the schema
+pnpm db:studio                     # drizzle-kit studio
+```
+
+Against the embedded database while the dev server is running, these connect
+through it rather than opening its files.
+
+## Keys
+
+```bash
+pnpm keys list
+pnpm keys rotate [--retire]        # sign with a new key now
+pnpm keys generate                 # a JWK Set for FG_ID_JWKS
+pnpm keys rotate --env             # the next FG_ID_JWKS
+```
+
+## Policy
+
+```bash
+pnpm policy:test                   # policies/*_test.rego
+pnpm policy:build                  # id's rules alone, to policies.tar.gz, for trying locally
+pnpm policy:log [--subject SUB] [--decision NAME] [--since 24h] [--limit N]
+```
+
+`policy:test` and `policy:build` are `fg-policy`, from
+[@fairgarden/policy](https://github.com/fairgarden/policy), and need the opa
+CLI, or `OPA` set to its path. `policy:log` prints recorded decisions, oldest
+first, as OPA decision log JSON lines: what an audit is handed.
+
+## Tests
+
+```bash
+pnpm test                # unit tests
+pnpm test:e2e            # browser tests
+```
+
+The commands are TypeScript run by Node itself, which works in a checkout.
+Node will not run TypeScript from `node_modules`, so from an installed copy of
+the package they are not available.

@@ -1,0 +1,31 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fgd-space-stack);
+}
+
+.details,
+.preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.details {
+  gap: calc(var(--fgd-space-stack) / 2);
+}
+
+.preview {
+  color: var(--role-heading);
+  font-family: var(--fgd-font-mono);
+}
+
+.missing {
+  color: var(--role-muted);
+  font-style: italic;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--fgd-space-stack) / 2);
+}

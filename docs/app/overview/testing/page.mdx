@@ -1,0 +1,40 @@
+# Testing
+
+Everything the tests need is in this repository: no other FairGarden service,
+no database server, no mail server.
+
+## Unit tests
+
+```bash
+pnpm test               # vitest, test/**/*.test.ts
+```
+
+For the parts where a mistake would be quiet: configuration, merge patches,
+migrations and their rollbacks, key rotation, email codes, passkeys, policy,
+claims reviews, and the API's shape. Anything that touches the database gets a
+fresh in-memory Postgres per file, reached through `pg` like the real thing.
+Passkeys are driven by a software authenticator. The compiled-Rego test runs
+when the `opa` CLI is installed, and is skipped otherwise.
+
+## Browser tests
+
+```bash
+pnpm exec playwright install chromium   # once
+pnpm test:e2e
+```
+
+Playwright builds the service for production and serves it on port 3110 with
+a fresh database, beside `e2e/mock-service.ts` on 3111, which plays two
+services:
+
+- **Mock Service**, an ordinary OIDC client to sign in to, which shows the
+  claims it was given, calls userinfo, and signs out.
+- **Club**, which owns the `club` scope and answers claims reviews, recording
+  each so tests can check what was asked, and when.
+
+The tests cover signing up by code and by link, a link opened in another
+browser, wrong codes, returning on a new device, passkeys (with Chromium's
+virtual authenticator, moved to a second device), consent and sensitive
+scopes, claims from Club, the account page, removing a service's access, and
+signing out. `E2E_DEV=1` serves `next dev` instead, which starts faster while
+writing tests.

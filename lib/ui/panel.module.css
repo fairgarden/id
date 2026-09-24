@@ -1,0 +1,38 @@
+.main {
+  display: grid;
+  place-items: start center;
+  min-height: 100dvh;
+  padding: var(--fgd-space-section) var(--fgd-space-margin);
+}
+
+.narrow {
+  width: min(100%, 30rem);
+}
+
+.wide {
+  width: min(100%, 46rem);
+}
+
+.header,
+.stack,
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fgd-space-stack);
+}
+
+.section {
+  padding-block-start: var(--fgd-space-stack);
+  border-block-start: 1px solid var(--role-hairline);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--fgd-space-stack);
+}
+
+.note {
+  color: var(--role-muted);
+}

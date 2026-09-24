@@ -1,0 +1,39 @@
+@import '@material-symbols/font-600/rounded.css';
+
+.material-symbols-rounded {
+  /* Use preloaded font injected into the variable */
+  font-family: var(--font-material-symbols-rounded, 'Material Symbols Rounded');
+
+  /* Avoid users selecting invisible characters */
+  user-select: none;
+}
+
+/* Recommended icon sizes */
+.material-symbols-rounded.size-20 {
+  font-size: 20px;
+  font-variation-settings: 'opsz' 20;
+}
+.material-symbols-rounded.size-24 {
+  font-size: 24px;
+  font-variation-settings: 'opsz' 24;
+}
+.material-symbols-rounded.size-40 {
+  font-size: 40px;
+  font-variation-settings: 'opsz' 40;
+}
+.material-symbols-rounded.size-48 {
+  font-size: 48px;
+  font-variation-settings: 'opsz' 48;
+}
+
+/* Rules for using icons as black on a light background. */
+.material-symbols-rounded.dark {
+  background: black;
+  color: rgba(255, 255, 255, 1);
+  font-variation-settings: 'GRAD' -25;
+}
+.material-symbols-rounded.dark-inactive {
+  background: black;
+  color: rgba(255, 255, 255, 0.3);
+  font-variation-settings: 'GRAD' -25;
+}

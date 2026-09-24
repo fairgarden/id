@@ -1,0 +1,15 @@
+# Passkeys
+
+The signed-in person's passkeys.
+
+| | |
+| --- | --- |
+| `GET passkeys` | a `PasskeyList` |
+| `POST passkeychallenges` | options for `navigator.credentials.create()`: `{ "spec": { "purpose": "Register" } }` |
+| `POST passkeys` | register one: `{ "spec": { "credential": { … }, "displayName": "…" } }` |
+| `PATCH passkeys/<name>` | rename: `{ "spec": { "displayName": "…" } }` |
+| `DELETE passkeys/<name>` | remove |
+
+A challenge answers once, within five minutes. A new passkey is named for the
+device that made it, "Passkey synced from Mac", until it is renamed.
+Signing in with a passkey happens in an [interaction](/api/interactions).

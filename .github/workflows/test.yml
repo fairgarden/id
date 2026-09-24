@@ -1,0 +1,69 @@
+name: Test
+
+# Everything here runs from this repository alone: the browser tests bring
+# their own mock services and an embedded database.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions: {}
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Unit and browser tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      # Pin these to a commit sha once Renovate is watching the repository.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            # A module developed inside a distribution keeps its lockfile there.
+            pnpm install --no-frozen-lockfile
+          fi
+
+      # Only for compiling and testing Rego; the service runs it without OPA.
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+
+      - name: Policy tests
+        run: pnpm policy:test
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Install the browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Browser tests
+        run: pnpm test:e2e
+
+      - name: Keep the report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

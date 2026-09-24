@@ -1,0 +1,34 @@
+# Keys
+
+Tokens are signed with RS256 keys, and cookies with secrets, and both live in
+the database and look after themselves.
+
+## Rotation
+
+Every `FG_ID_KEY_ROTATION_DAYS` (30) a new key is made. It is published in the
+JWKS a day before it signs anything, so services that cache the JWKS have it
+before they meet a token signed with it, and it is kept for two rotations
+after it stops signing, so tokens it signed still verify. Three are kept.
+
+Running instances check at most once a minute, so a new key reaches all of
+them without a redeploy. When several notice at once, a lock makes sure only
+one key is made.
+
+## After a leak
+
+```bash
+pnpm keys rotate            # sign with a new key now; the old one still verifies
+pnpm keys rotate --retire   # and stop publishing the old ones
+pnpm keys list
+```
+
+## Keys in a secret store instead
+
+`FG_ID_JWKS` (a JWK Set, as JSON or base64url JSON) and `FG_ID_COOKIE_SECRETS`
+take over from the database. The first key or secret signs; all of them
+verify.
+
+```bash
+pnpm keys generate          # a JWK Set to start with
+pnpm keys rotate --env      # the next value: a new key first, the last two after it
+```

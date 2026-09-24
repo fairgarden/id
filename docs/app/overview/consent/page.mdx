@@ -1,0 +1,47 @@
+# What people share
+
+The first time a service asks for something, the person sees each scope it
+asked for, what it would share — their actual email address, their actual
+phone number — and chooses.
+
+| Scope | Claims | Ticked to start |
+| --- | --- | --- |
+| `openid` | `sub`, `amr` | always, and cannot be unticked |
+| `email` | `email`, `email_verified` | yes |
+| `profile` | `name`, `updated_at` | yes |
+| `phone` | `phone_number`, `phone_number_verified` | no — sensitive |
+| `address` | `address` (mailing) | no — sensitive |
+| `residential_address` | `residential_address` | no — sensitive |
+| `offline_access` | a refresh token | yes |
+| a [service's own scope](/overview/claims) | whatever it supplies | no |
+
+Sensitive scopes, and every scope another service supplies, are never agreed
+to on the person's behalf. If [policy](/overview/policy) keeps a scope from a
+service, it is shown greyed out with the policy's reason.
+
+## What is remembered
+
+A consent is an oidc-provider *grant*, one per person and service, kept across
+sessions and devices: signing in on a new laptop does not ask again. What the
+person refused is remembered too, so they are not asked again every time.
+
+## Asked again
+
+A service that sends `prompt=consent` is asking the person to think again —
+members does, when the organization's rules for joining need something they
+declined. Then every scope it asks for is shown, ticked as they answered last
+time, and they can share what they refused before, or stop sharing something.
+
+## Taking it back
+
+The account page, `/account`, lists every service with what it can see.
+Removing a service's access deletes the grant and every token issued under
+it — its access token stops working at once — and the next time the service
+sends them to sign in, they are asked afresh — which is also how to share
+something they refused before, with a service that does not ask again.
+
+## Details kept here
+
+The account page is also where people keep their name, phone number and
+addresses. A phone number is never claimed to be verified. An address is
+released as the OIDC `address` claim, with `formatted` derived from its parts.

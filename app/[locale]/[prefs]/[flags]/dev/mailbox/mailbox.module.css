@@ -1,0 +1,10 @@
+.meta {
+  color: var(--role-muted);
+}
+
+.body {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--fgd-font-mono);
+}

@@ -1,0 +1,39 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fgd-space-stack);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.decision {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--fgd-space-stack) / 3);
+}
+
+.muted {
+  color: var(--role-muted);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--fgd-space-stack) / 2);
+}
+
+.source {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--fgd-space-stack) / 2);
+}
+
+.code {
+  margin: 0;
+  padding: var(--fgd-space-stack);
+  overflow-x: auto;
+  border: 1px solid var(--role-hairline);
+  border-radius: var(--radius-2);
+  white-space: pre;
+}

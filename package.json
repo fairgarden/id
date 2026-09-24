@@ -1,0 +1,89 @@
+{
+  "name": "@fairgarden-private/id",
+  "version": "0.1.0-alpha.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fairgarden/id.git"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "files": [
+    "app",
+    "lib",
+    "pages",
+    "public",
+    "next.config.ts",
+    "proxy.ts",
+    "drizzle",
+    "drizzle.config.ts",
+    "policies"
+  ],
+  "scripts": {
+    "dev": "fg-dist policy use && next dev -p 3010",
+    "build": "fg-dist policy use && next build",
+    "start": "next start",
+    "lint": "eslint",
+    "canary": "fg-dist canary",
+    "release": "fg-dist release",
+    "release:check": "fg-dist release --check",
+    "db:status": "node lib/server/cli.ts db status",
+    "db:migrate": "node lib/server/cli.ts db migrate",
+    "db:rollback": "node lib/server/cli.ts db rollback",
+    "db:generate": "node lib/server/cli.ts db generate",
+    "db:studio": "drizzle-kit studio",
+    "keys": "node lib/server/cli.ts keys",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "policy:build": "fg-policy build",
+    "policy:test": "fg-policy test",
+    "policy:log": "node lib/server/cli.ts policy log"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-socket": "^0.2.11",
+    "@fairgarden/indicators": "^0.1.0-alpha.0",
+    "@fairgarden/monolith": "^0.1.0-alpha.0",
+    "@fairgarden/policy": "^0.1.0-alpha.0",
+    "@simplewebauthn/browser": "^14.0.0",
+    "@simplewebauthn/server": "^14.0.2",
+    "classnames": "^2.5.1",
+    "drizzle-orm": "^0.45.3",
+    "jose": "^6.2.12",
+    "next": "^16.3.5",
+    "nodemailer": "^10.0.10",
+    "oidc-provider": "^9.12.2",
+    "pg": "^8.23.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
+  },
+  "peerDependencies": {
+    "@fairgarden/design": "^0.1.0-alpha.0"
+  },
+  "devDependencies": {
+    "@fairgarden/design": "^0.1.0-alpha.0",
+    "@fairgarden/distribution": "^0.1.0-alpha.0",
+    "@material-symbols/font-600": "^0.47.4",
+    "@playwright/test": "^1.63.0",
+    "@react-aria/optimize-locales-plugin": "^2.0.2",
+    "@types/node": "^26.6.2",
+    "@types/oidc-provider": "^9.12.1",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-n": "^18.3.0",
+    "eslint-plugin-no-relative-import-paths": "^1.7.3",
+    "openid-client": "^6.8.8",
+    "react-aria-components": "^1.21.1",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.1"
+  },
+  "packageManager": "pnpm@10.28.0+sha512.05df71d1421f21399e053fde567cea34d446fa02c76571441bfc1c7956e98e363088982d940465fd34480d4d90a0668bc12362f8aa88000a64e83d0b0e47be48"
+}

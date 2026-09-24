@@ -1,0 +1,39 @@
+# Policy decisions
+
+The decisions [policy](/overview/policy) made about the signed-in person,
+from the same record an audit reads. `GET` only.
+
+| | |
+| --- | --- |
+| `GET policydecisions` | a `PolicyDecisionList`, newest first |
+
+`?fieldSelector=` keeps some, Kubernetes style: `spec.decision=release`,
+`spec.input.purpose=Consent`, or both, comma separated. `?limit=` caps how
+many (default 50, at most 200). A decision that could not be made says so in
+`status.error`, without the details, which stay in the audit log.
+
+```json
+{
+  "kind": "PolicyDecision",
+  "metadata": { "name": "6f1c7e2a-…", "creationTimestamp": "2026-09-24T17:39:32.319Z" },
+  "spec": {
+    "decision": "release",
+    "path": "fairgarden/id/release",
+    "input": { "user": { "name": "…" }, "client": { "id": "events", "name": "Events" }, "scopes": ["openid", "residential_address"], "purpose": "Consent" }
+  },
+  "status": {
+    "result": { "scopes": ["openid"], "reasons": { "residential_address": "Only Members may ask where you live." } },
+    "error": null,
+    "summary": "Events was allowed to ask for Your account ID, Residential address. Not offered: Residential address — Only Members may ask where you live.",
+    "engine": "bundle",
+    "revision": "2026.10.01+3f9a2c1e4b5d",
+    "erased": []
+  }
+}
+```
+
+`status.summary` says it in words. A decision that could not be made has
+`status.error`, and counted as no.
+
+`status.revision` names the policy that made it:
+[`policies/<revision>`](/api/policies) is that policy, as it was.

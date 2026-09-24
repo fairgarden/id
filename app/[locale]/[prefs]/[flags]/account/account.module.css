@@ -1,0 +1,32 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fgd-space-stack);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--fgd-space-stack) / 2);
+  padding-block-end: var(--fgd-space-stack);
+  border-block-end: 1px solid var(--role-hairline);
+}
+
+.rowBody {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--fgd-space-stack) / 3);
+}
+
+.muted {
+  color: var(--role-muted);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--fgd-space-stack) / 2);
+}
