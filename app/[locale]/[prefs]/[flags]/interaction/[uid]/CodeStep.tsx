@@ -6,9 +6,9 @@ import { Button } from '@fairgarden/design/actions/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@fairgarden/design/forms/field'
 import { Form, FormActions } from '@fairgarden/design/forms/form'
 import { Input } from '@fairgarden/design/forms/input'
-import type { EmailChallenge, Interaction } from '@fairgarden-private/id/lib/api/schemas'
-import { ApiFailure, call, messageOf } from '@fairgarden-private/id/lib/client/api'
-import { Note, Panel, Stack } from '@fairgarden-private/id/lib/ui/Panel'
+import type { EmailChallenge, Interaction } from '@fairgarden/id/lib/api/schemas'
+import { ApiFailure, call, messageOf } from '@fairgarden/id/lib/client/api'
+import { Note, Panel, Stack } from '@fairgarden/id/lib/ui/Panel'
 
 /** The email went out: type its code here, or open its link in this browser. */
 export function CodeStep({

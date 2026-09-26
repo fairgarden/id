@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { Alert } from '@fairgarden/design/feedback/alert'
 import { Button } from '@fairgarden/design/actions/button'
-import type { Interaction, Passkey, PasskeyChallenge } from '@fairgarden-private/id/lib/api/schemas'
-import { call, messageOf } from '@fairgarden-private/id/lib/client/api'
-import { register, wasCancelled } from '@fairgarden-private/id/lib/client/passkeys'
-import { Panel, Stack } from '@fairgarden-private/id/lib/ui/Panel'
+import type { Interaction, Passkey, PasskeyChallenge } from '@fairgarden/id/lib/api/schemas'
+import { call, messageOf } from '@fairgarden/id/lib/client/api'
+import { register, wasCancelled } from '@fairgarden/id/lib/client/passkeys'
+import { Panel, Stack } from '@fairgarden/id/lib/ui/Panel'
 
 /** Offered after signing in by email, until there is a passkey. */
 export function PasskeyStep({

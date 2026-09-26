@@ -1,13 +1,13 @@
 import { desc, eq, sql } from 'drizzle-orm'
 import { describe, expect, it } from 'vitest'
-import { db } from '@fairgarden-private/id/lib/server/db'
-import { emailCodes, mockMessages } from '@fairgarden-private/id/lib/server/schema'
+import { db } from '@fairgarden/id/lib/server/db'
+import { emailCodes, mockMessages } from '@fairgarden/id/lib/server/schema'
 import {
   pendingEmailChallenge,
   startEmailChallenge,
   verifyEmailCode,
   verifyEmailLink,
-} from '@fairgarden-private/id/lib/server/sign-in'
+} from '@fairgarden/id/lib/server/sign-in'
 import { useDatabase } from './helpers/database'
 
 /** The code and token from the last mock email to this address. */

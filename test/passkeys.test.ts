@@ -1,13 +1,13 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { AuthenticationResponseJSON, RegistrationResponseJSON } from '@simplewebauthn/server'
-import { findOrCreateAccountByEmail, listPasskeys, type Account } from '@fairgarden-private/id/lib/server/accounts'
-import { db } from '@fairgarden-private/id/lib/server/db'
+import { findOrCreateAccountByEmail, listPasskeys, type Account } from '@fairgarden/id/lib/server/accounts'
+import { db } from '@fairgarden/id/lib/server/db'
 import {
   authenticationOptions,
   registrationOptions,
   verifyAuthentication,
   verifyRegistration,
-} from '@fairgarden-private/id/lib/server/passkeys'
+} from '@fairgarden/id/lib/server/passkeys'
 import { SoftwareAuthenticator } from './helpers/authenticator'
 import { useDatabase } from './helpers/database'
 

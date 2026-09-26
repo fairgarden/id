@@ -1,4 +1,4 @@
-import type { Status, StatusReason } from '@fairgarden-private/id/lib/api/schemas'
+import type { Status, StatusReason } from '@fairgarden/id/lib/api/schemas'
 
 /**
  * A request that cannot be served, and why. The API sends it as a Kubernetes

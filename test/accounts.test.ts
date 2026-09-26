@@ -5,8 +5,8 @@ import {
   formatAddress,
   normalizeEmail,
   updateProfile,
-} from '@fairgarden-private/id/lib/server/accounts'
-import { db } from '@fairgarden-private/id/lib/server/db'
+} from '@fairgarden/id/lib/server/accounts'
+import { db } from '@fairgarden/id/lib/server/db'
 import { useDatabase } from './helpers/database'
 
 describe('accounts', () => {

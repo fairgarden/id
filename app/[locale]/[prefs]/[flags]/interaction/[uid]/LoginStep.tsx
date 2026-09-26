@@ -6,15 +6,15 @@ import { Button } from '@fairgarden/design/actions/button'
 import { Field, FieldError, FieldLabel } from '@fairgarden/design/forms/field'
 import { Form, FormActions } from '@fairgarden/design/forms/form'
 import { Input } from '@fairgarden/design/forms/input'
-import type { EmailChallenge, Interaction, PasskeyChallenge } from '@fairgarden-private/id/lib/api/schemas'
-import { ApiFailure, call, messageOf } from '@fairgarden-private/id/lib/client/api'
+import type { EmailChallenge, Interaction, PasskeyChallenge } from '@fairgarden/id/lib/api/schemas'
+import { ApiFailure, call, messageOf } from '@fairgarden/id/lib/client/api'
 import {
   authenticate,
   autofillSupported,
   cancelPasskeyRequest,
   wasCancelled,
-} from '@fairgarden-private/id/lib/client/passkeys'
-import { Note, Panel } from '@fairgarden-private/id/lib/ui/Panel'
+} from '@fairgarden/id/lib/client/passkeys'
+import { Note, Panel } from '@fairgarden/id/lib/ui/Panel'
 
 /**
  * Who is signing in: a passkey, offered in the email field's autofill and by

@@ -1,5 +1,5 @@
 {
-  "name": "@fairgarden-private/id",
+  "name": "@fairgarden/id",
   "version": "0.1.0-alpha.0",
   "type": "module",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "git+https://github.com/fairgarden/id.git"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "files": [
     "app",

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { ClientProvider } from '@fairgarden/design/utils/ClientProvider'
 import '@fairgarden/design/utils/global.css'
 import '@fairgarden/design/utils/fonts'
-import { indicators } from '@fairgarden-private/id/lib/indicators'
+import { indicators } from '@fairgarden/id/lib/indicators'
 
 import './icons.css'
 import styles from './layout.module.css'

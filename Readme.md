@@ -20,7 +20,7 @@ not what is published — the version here is always the next one.
    identifier. A prerelease gets no maintenance branch; there is no released
    line behind it yet.
 
-Every push to main publishes `@fairgarden-private/id@canary`. A canary is not a release and
+Every push to main publishes `@fairgarden/id@canary`. A canary is not a release and
 carries no promise; it is there so main can be tried without a checkout.
 
 <!-- /fg:releasing -->
@@ -58,7 +58,7 @@ The docs are a site in this repository, covering every piece in more depth
 than this page:
 
 ```bash
-pnpm --filter @fairgarden-private/id-docs dev   # http://localhost:3034
+pnpm --filter @fairgarden/id-docs dev   # http://localhost:3034
 ```
 
 ## Testing

@@ -3,7 +3,7 @@
 import { Fieldset, FieldsetLegend } from '@fairgarden/design/forms/fieldset'
 import { Radio } from '@fairgarden/design/forms/radio'
 import { RadioGroup } from '@fairgarden/design/forms/radio-group'
-import { usePref } from '@fairgarden-private/id/lib/link'
+import { usePref } from '@fairgarden/id/lib/link'
 
 const SYSTEM = 'system'
 

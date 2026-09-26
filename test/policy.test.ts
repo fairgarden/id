@@ -8,7 +8,7 @@ import path from 'node:path'
 import { asc, eq } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { toEntry } from '@fairgarden/policy/drizzle'
-import type { AuthorizationInput } from '@fairgarden-private/id/lib/server/policy'
+import type { AuthorizationInput } from '@fairgarden/id/lib/server/policy'
 import { ROOT, useDatabase } from './helpers/database'
 
 const passkeys = (owner?: string): AuthorizationInput['resource'] => ({
@@ -26,13 +26,13 @@ const load = async (env: Record<string, string> = {}) => {
   }
   // Whatever a build left in .policy/, each test says which policy it means.
   Object.assign(process.env, env.FG_POLICY_BUNDLE || env.FG_POLICY_OPA_URL ? {} : { FG_POLICY_BUNDLE: 'none' }, env)
-  return import('@fairgarden-private/id/lib/server/policy')
+  return import('@fairgarden/id/lib/server/policy')
 }
 
 /** What was recorded about someone, oldest first, as OPA would log it. */
 const recorded = async (subject: string) => {
-  const { db } = await import('@fairgarden-private/id/lib/server/db')
-  const { policyDecisions } = await import('@fairgarden-private/id/lib/server/schema')
+  const { db } = await import('@fairgarden/id/lib/server/db')
+  const { policyDecisions } = await import('@fairgarden/id/lib/server/schema')
   const rows = await (await db())
     .select()
     .from(policyDecisions)

@@ -1,5 +1,5 @@
 import { createLocaleProxy } from '@fairgarden/indicators/proxy'
-import { indicators } from '@fairgarden-private/id/lib/indicators'
+import { indicators } from '@fairgarden/id/lib/indicators'
 
 // Negotiates the locale at the site root only; every other path is a
 // rewrite. Not mounted by a monolith, which runs its own for each app.

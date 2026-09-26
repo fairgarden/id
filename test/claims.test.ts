@@ -3,8 +3,8 @@ import type { AddressInfo } from 'node:net'
 import { createPublicKey } from 'node:crypto'
 import { jwtVerify, type JWTHeaderParameters, type JWTPayload } from 'jose'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
-import type { ClaimsReview } from '@fairgarden-private/id/lib/api/schemas'
-import { generateSigningKey } from '@fairgarden-private/id/lib/server/keys'
+import type { ClaimsReview } from '@fairgarden/id/lib/api/schemas'
+import { generateSigningKey } from '@fairgarden/id/lib/server/keys'
 
 /**
  * A service that supplies the `club` scope, answering ClaimsReviews the way
@@ -46,7 +46,7 @@ const server = http.createServer(async (req, res) => {
   )
 })
 
-const load = () => import('@fairgarden-private/id/lib/server/claims')
+const load = () => import('@fairgarden/id/lib/server/claims')
 
 describe('claims from another service', () => {
   beforeAll(async () => {

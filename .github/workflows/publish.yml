@@ -74,7 +74,7 @@ jobs:
           if [ "${{ steps.canary.outputs.skip }}" = "true" ]; then
             echo "\`${{ steps.canary.outputs.version }}\` is already the canary for this commit." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "Published \`@fairgarden-private/id@${{ steps.canary.outputs.version }}\` to the \`canary\` tag." >> "$GITHUB_STEP_SUMMARY"
+            echo "Published \`@fairgarden/id@${{ steps.canary.outputs.version }}\` to the \`canary\` tag." >> "$GITHUB_STEP_SUMMARY"
           fi
 
   release:
@@ -129,4 +129,4 @@ jobs:
 
       - name: Summary
         run: |
-          echo "Published \`@fairgarden-private/id@${{ steps.version.outputs.version }}\` to the \`${{ inputs.dist-tag }}\` tag." >> "$GITHUB_STEP_SUMMARY"
+          echo "Published \`@fairgarden/id@${{ steps.version.outputs.version }}\` to the \`${{ inputs.dist-tag }}\` tag." >> "$GITHUB_STEP_SUMMARY"

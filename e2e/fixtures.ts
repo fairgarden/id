@@ -1,5 +1,5 @@
 import { expect, type APIRequestContext, type CDPSession, type Page } from '@playwright/test'
-import type { MockMessageList } from '@fairgarden-private/id/lib/api/schemas'
+import type { MockMessageList } from '@fairgarden/id/lib/api/schemas'
 
 /** The mock service the tests sign in to; see mock-service.ts. */
 export const MOCK = 'http://localhost:3111'

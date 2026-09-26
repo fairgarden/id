@@ -1,6 +1,6 @@
 import * as z from 'zod'
-import { API_GROUP, API_VERSION, GROUP_VERSION } from '@fairgarden-private/id/lib/api/group'
-import { ClaimsReview, registry, Status } from '@fairgarden-private/id/lib/api/schemas'
+import { API_GROUP, API_VERSION, GROUP_VERSION } from '@fairgarden/id/lib/api/group'
+import { ClaimsReview, registry, Status } from '@fairgarden/id/lib/api/schemas'
 import { sessionRoutes } from './api-account.ts'
 import {
   assertSameOrigin,

@@ -6,9 +6,9 @@ import { Button } from '@fairgarden/design/actions/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@fairgarden/design/forms/field'
 import { Form, FormActions } from '@fairgarden/design/forms/form'
 import { Input } from '@fairgarden/design/forms/input'
-import type { Account, Interaction } from '@fairgarden-private/id/lib/api/schemas'
-import { call, messageOf } from '@fairgarden-private/id/lib/client/api'
-import { Note, Panel } from '@fairgarden-private/id/lib/ui/Panel'
+import type { Account, Interaction } from '@fairgarden/id/lib/api/schemas'
+import { call, messageOf } from '@fairgarden/id/lib/client/api'
+import { Note, Panel } from '@fairgarden/id/lib/ui/Panel'
 
 /** A new account's name: the one thing asked of everyone. */
 export function ProfileStep({

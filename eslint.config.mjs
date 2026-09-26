@@ -16,7 +16,7 @@ const config = [
     rules: {
       'no-relative-import-paths/no-relative-import-paths': [
         'warn',
-        { allowSameFolder: true, prefix: '@fairgarden-private/id' },
+        { allowSameFolder: true, prefix: '@fairgarden/id' },
       ],
     },
   },
@@ -36,7 +36,7 @@ const config = [
               '!react/**',
               '!next',
               '!next/**',
-              '!@fairgarden-private/id/**',
+              '!@fairgarden/id/**',
               '!@fairgarden/design/**',
             ],
             message: 'External modules are not allowed.',

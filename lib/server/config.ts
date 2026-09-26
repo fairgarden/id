@@ -10,7 +10,7 @@ import { policySourceFromEnv, type PolicySource } from '@fairgarden/policy'
  * Node can strip and imports its neighbours with their extension.
  */
 
-const PACKAGE_NAME = '@fairgarden-private/id'
+const PACKAGE_NAME = '@fairgarden/id'
 
 /** The OIDC client the account page signs in with. Never listed as a service. */
 export const ACCOUNT_CLIENT_ID = 'fg-id-account'

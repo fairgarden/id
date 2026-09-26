@@ -1,5 +1,5 @@
-import { GROUP_VERSION } from '@fairgarden-private/id/lib/api/group'
-import * as api from '@fairgarden-private/id/lib/api/schemas'
+import { GROUP_VERSION } from '@fairgarden/id/lib/api/group'
+import * as api from '@fairgarden/id/lib/api/schemas'
 import { defineRoute, type Route } from './api-route.ts'
 import { ApiError } from './errors.ts'
 import { currentPolicy, pastPolicy, type PolicyState } from './policy.ts'

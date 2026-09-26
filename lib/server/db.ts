@@ -34,7 +34,7 @@ export interface Connection {
 
 // Kept on globalThis: Next bundles API routes and pages separately and reloads
 // modules in development, but they all share the process.
-const KEY = Symbol.for('@fairgarden-private/id/db')
+const KEY = Symbol.for('@fairgarden/id/db')
 type Holder = { [KEY]?: Promise<Connection> }
 
 /** The shared connection for request handlers. */
@@ -114,14 +114,14 @@ const findMigrations = (): string | undefined => {
   // Development only: never traced into a build.
   const candidates = [
     process.env.FG_ID_MIGRATIONS_DIR,
-    path.join(/* turbopackIgnore: true */ cwd, 'node_modules', '@fairgarden-private', 'id', 'drizzle'),
+    path.join(/* turbopackIgnore: true */ cwd, 'node_modules', '@fairgarden', 'id', 'drizzle'),
     path.join(/* turbopackIgnore: true */ cwd, 'drizzle'),
   ]
   return candidates.find((candidate) => {
     if (!candidate || !existsSync(path.join(candidate, 'meta', '_journal.json'))) return false
     try {
       const pkg = JSON.parse(readFileSync(path.join(candidate, '..', 'package.json'), 'utf8'))
-      return pkg.name === '@fairgarden-private/id'
+      return pkg.name === '@fairgarden/id'
     } catch {
       return false
     }

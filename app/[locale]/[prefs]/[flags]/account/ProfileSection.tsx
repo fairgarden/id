@@ -8,8 +8,8 @@ import { Field, FieldDescription, FieldError, FieldLabel } from '@fairgarden/des
 import { Fieldset, FieldsetLegend } from '@fairgarden/design/forms/fieldset'
 import { Form, FormActions, FormRow } from '@fairgarden/design/forms/form'
 import { Input } from '@fairgarden/design/forms/input'
-import type { Account, Address } from '@fairgarden-private/id/lib/api/schemas'
-import { ApiFailure, call, messageOf } from '@fairgarden-private/id/lib/client/api'
+import type { Account, Address } from '@fairgarden/id/lib/api/schemas'
+import { ApiFailure, call, messageOf } from '@fairgarden/id/lib/client/api'
 
 const ADDRESS_PARTS = ['streetAddress', 'locality', 'region', 'postalCode', 'country'] as const
 

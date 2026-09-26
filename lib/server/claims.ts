@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { importJWK, SignJWT, type CryptoKey, type KeyObject } from 'jose'
-import { GROUP_VERSION } from '@fairgarden-private/id/lib/api/group'
-import type { ClaimsReview } from '@fairgarden-private/id/lib/api/schemas'
+import { GROUP_VERSION } from '@fairgarden/id/lib/api/group'
+import type { ClaimsReview } from '@fairgarden/id/lib/api/schemas'
 import { getConfig, type JsonWebKeyWithKid, type Service } from './config.ts'
 
 /**

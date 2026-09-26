@@ -3,8 +3,8 @@
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@fairgarden/design/actions/button'
-import { MOUNT } from '@fairgarden-private/id/lib/client/api'
-import { Panel, Stack } from '@fairgarden-private/id/lib/ui/Panel'
+import { MOUNT } from '@fairgarden/id/lib/client/api'
+import { Panel, Stack } from '@fairgarden/id/lib/ui/Panel'
 
 // oidc-provider asks here before ending a session: a service can send someone
 // to sign out, but only they can confirm it. The form posts the token it was

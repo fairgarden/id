@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: '@fairgarden-private/id',
+  title: '@fairgarden/id',
   description: 'Sign in to every FairGarden service, and decide what each one can see',
 }
 

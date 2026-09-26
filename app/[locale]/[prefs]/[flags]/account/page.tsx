@@ -9,11 +9,11 @@ import type {
   PasskeyList,
   PolicyDecisionList,
   Session,
-} from '@fairgarden-private/id/lib/api/schemas'
-import { call, messageOf } from '@fairgarden-private/id/lib/client/api'
-import ThemeToggle from '@fairgarden-private/id/lib/theme'
-import { Panel, Section, Stack } from '@fairgarden-private/id/lib/ui/Panel'
-import { SignIn } from '@fairgarden-private/id/lib/ui/SignIn'
+} from '@fairgarden/id/lib/api/schemas'
+import { call, messageOf } from '@fairgarden/id/lib/client/api'
+import ThemeToggle from '@fairgarden/id/lib/theme'
+import { Panel, Section, Stack } from '@fairgarden/id/lib/ui/Panel'
+import { SignIn } from '@fairgarden/id/lib/ui/SignIn'
 import { DecisionsSection } from './DecisionsSection'
 import { PasskeysSection } from './PasskeysSection'
 import { ProfileSection } from './ProfileSection'

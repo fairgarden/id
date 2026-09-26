@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ConfigError, parseServices } from '@fairgarden-private/id/lib/server/config'
+import { ConfigError, parseServices } from '@fairgarden/id/lib/server/config'
 
 describe('parseServices', () => {
   it('names a service after its variables, and fills in its URLs', () => {
@@ -84,11 +84,11 @@ describe('getConfig', () => {
     process.env = { ...saved }
   })
 
-  const load = async () => (await import('@fairgarden-private/id/lib/server/config')).getConfig()
+  const load = async () => (await import('@fairgarden/id/lib/server/config')).getConfig()
 
   it('puts a monolith mount point into the issuer', async () => {
     process.env.FG_ID_URL = 'https://example.com/'
-    process.env.MONOLITH_MOUNTS = JSON.stringify({ '@fairgarden-private/id': '/id' })
+    process.env.MONOLITH_MOUNTS = JSON.stringify({ '@fairgarden/id': '/id' })
     const config = await load()
     expect(config.issuer).toBe('https://example.com/id')
     expect(config.origin).toBe('https://example.com')

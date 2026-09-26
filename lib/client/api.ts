@@ -1,9 +1,9 @@
 import { mountPrefix } from '@fairgarden/monolith/link'
-import { resourcePath } from '@fairgarden-private/id/lib/api/group'
-import type { Status } from '@fairgarden-private/id/lib/api/schemas'
+import { resourcePath } from '@fairgarden/id/lib/api/group'
+import type { Status } from '@fairgarden/id/lib/api/schemas'
 
 /** Where this app is mounted in a monolith, or `''` on its own. */
-export const MOUNT = mountPrefix('@fairgarden-private/id')
+export const MOUNT = mountPrefix('@fairgarden/id')
 
 /** A request the API refused, with the `Status` it said why in. */
 export class ApiFailure extends Error {

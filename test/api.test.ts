@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { API_VERSION } from '@fairgarden-private/id/lib/api/group'
-import { apiResources, openApiDocument, ROUTES } from '@fairgarden-private/id/lib/server/api'
+import { API_VERSION } from '@fairgarden/id/lib/api/group'
+import { apiResources, openApiDocument, ROUTES } from '@fairgarden/id/lib/server/api'
 import { ROOT } from './helpers/database'
 
 /** `interactions/{name}/login` -> app/api/<version>/interactions/[name]/login/route.ts */

@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { migrate, rollback, status } from '@fairgarden-private/id/lib/server/migrator'
+import { migrate, rollback, status } from '@fairgarden/id/lib/server/migrator'
 import { ROOT, useDatabase } from './helpers/database'
 
 /** A migrations folder shaped like drizzle-kit's. */

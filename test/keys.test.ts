@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { db } from '@fairgarden-private/id/lib/server/db'
-import { describeKeys, loadKeys, rotateNow } from '@fairgarden-private/id/lib/server/keys'
+import { db } from '@fairgarden/id/lib/server/db'
+import { describeKeys, loadKeys, rotateNow } from '@fairgarden/id/lib/server/keys'
 import { useDatabase } from './helpers/database'
 
 const DAY = 24 * 60 * 60 * 1000

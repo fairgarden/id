@@ -3,8 +3,8 @@
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@fairgarden/design/actions/button'
-import { Link } from '@fairgarden-private/id/lib/link'
-import { Panel, Stack } from '@fairgarden-private/id/lib/ui/Panel'
+import { Link } from '@fairgarden/id/lib/link'
+import { Panel, Stack } from '@fairgarden/id/lib/ui/Panel'
 
 function Done() {
   const client = useSearchParams()?.get('client')

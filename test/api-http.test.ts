@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as z from 'zod'
-import { assertSameOrigin, mergePatch, parse, readBody } from '@fairgarden-private/id/lib/server/api-http'
-import { ApiError } from '@fairgarden-private/id/lib/server/errors'
+import { assertSameOrigin, mergePatch, parse, readBody } from '@fairgarden/id/lib/server/api-http'
+import { ApiError } from '@fairgarden/id/lib/server/errors'
 
 describe('mergePatch', () => {
   // The examples from RFC 7386, appendix A.

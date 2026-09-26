@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 import { Alert } from '@fairgarden/design/feedback/alert'
 import { Button } from '@fairgarden/design/actions/button'
-import type { Session } from '@fairgarden-private/id/lib/api/schemas'
-import { call, messageOf } from '@fairgarden-private/id/lib/client/api'
-import { useHref } from '@fairgarden-private/id/lib/link'
-import { Note, Panel, Stack } from '@fairgarden-private/id/lib/ui/Panel'
+import type { Session } from '@fairgarden/id/lib/api/schemas'
+import { call, messageOf } from '@fairgarden/id/lib/client/api'
+import { useHref } from '@fairgarden/id/lib/link'
+import { Note, Panel, Stack } from '@fairgarden/id/lib/ui/Panel'
 
 /**
  * Send someone to sign in to their account here, or to the account page if

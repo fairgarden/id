@@ -1,5 +1,5 @@
 import Provider, { type ClientMetadata, type Configuration, type KoaContextWithOIDC } from 'oidc-provider'
-import { resourcePath } from '@fairgarden-private/id/lib/api/group'
+import { resourcePath } from '@fairgarden/id/lib/api/group'
 import { accountClaims, findAccount } from './accounts.ts'
 import { findGrantId, PostgresAdapter } from './adapter.ts'
 import { fetchDelegatedClaims } from './claims.ts'

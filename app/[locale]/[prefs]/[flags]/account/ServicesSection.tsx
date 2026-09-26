@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Alert } from '@fairgarden/design/feedback/alert'
 import { Button } from '@fairgarden/design/actions/button'
 import { Tag } from '@fairgarden/design/feedback/tag'
-import type { Grant } from '@fairgarden-private/id/lib/api/schemas'
-import { call, messageOf } from '@fairgarden-private/id/lib/client/api'
-import { Note, Stack } from '@fairgarden-private/id/lib/ui/Panel'
+import type { Grant } from '@fairgarden/id/lib/api/schemas'
+import { call, messageOf } from '@fairgarden/id/lib/client/api'
+import { Note, Stack } from '@fairgarden/id/lib/ui/Panel'
 import styles from './account.module.css'
 
 function GrantRow({ grant, onChanged }: { grant: Grant; onChanged: () => Promise<void> }) {

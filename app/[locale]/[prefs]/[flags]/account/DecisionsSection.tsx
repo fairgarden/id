@@ -1,8 +1,8 @@
 'use client'
 
-import type { PolicyDecision } from '@fairgarden-private/id/lib/api/schemas'
-import { Link } from '@fairgarden-private/id/lib/link'
-import { Note } from '@fairgarden-private/id/lib/ui/Panel'
+import type { PolicyDecision } from '@fairgarden/id/lib/api/schemas'
+import { Link } from '@fairgarden/id/lib/link'
+import { Note } from '@fairgarden/id/lib/ui/Panel'
 import styles from './account.module.css'
 
 const when = (value: string | undefined) =>

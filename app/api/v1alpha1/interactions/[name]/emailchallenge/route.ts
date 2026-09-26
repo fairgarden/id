@@ -1,4 +1,4 @@
-import { serve } from '@fairgarden-private/id/lib/server/api'
-import { createInteractionEmailChallenge } from '@fairgarden-private/id/lib/server/api-interactions'
+import { serve } from '@fairgarden/id/lib/server/api'
+import { createInteractionEmailChallenge } from '@fairgarden/id/lib/server/api-interactions'
 
 export const POST = serve(createInteractionEmailChallenge)

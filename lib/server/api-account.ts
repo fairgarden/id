@@ -2,8 +2,8 @@ import type Provider from 'oidc-provider'
 import type { RegistrationResponseJSON } from '@simplewebauthn/server'
 import { and, desc, eq, like, sql } from 'drizzle-orm'
 import { newestFirst, type DecisionLogRow } from '@fairgarden/policy/drizzle'
-import { API_GROUP, API_VERSION, GROUP_VERSION } from '@fairgarden-private/id/lib/api/group'
-import * as api from '@fairgarden-private/id/lib/api/schemas'
+import { API_GROUP, API_VERSION, GROUP_VERSION } from '@fairgarden/id/lib/api/group'
+import * as api from '@fairgarden/id/lib/api/schemas'
 import { listGrants as grantsOf, revokeGrant } from './adapter.ts'
 import {
   deletePasskey as removePasskey,

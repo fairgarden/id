@@ -29,7 +29,7 @@ test.describe("the organization's policy", () => {
         revision: expect.stringMatching(/\+[0-9a-f]{12}$/),
         organization: { organization: 'Example Club' },
         layers: [
-          { path: 'policies', role: 'base', package: '@fairgarden-private/id' },
+          { path: 'policies', role: 'base', package: '@fairgarden/id' },
           { path: 'examples/privacy', role: 'organization' },
         ],
       },

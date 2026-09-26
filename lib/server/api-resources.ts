@@ -1,6 +1,6 @@
-import { GROUP_VERSION } from '@fairgarden-private/id/lib/api/group'
-import { AccountPatch, AccountSpec } from '@fairgarden-private/id/lib/api/schemas'
-import type * as api from '@fairgarden-private/id/lib/api/schemas'
+import { GROUP_VERSION } from '@fairgarden/id/lib/api/group'
+import { AccountPatch, AccountSpec } from '@fairgarden/id/lib/api/schemas'
+import type * as api from '@fairgarden/id/lib/api/schemas'
 import {
   formatAddress,
   updateProfile,

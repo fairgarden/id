@@ -22,7 +22,7 @@
       }
     ],
     "paths": {
-      "@fairgarden-private/id/*": [
+      "@fairgarden/id/*": [
         "./*"
       ]
     },
