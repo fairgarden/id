@@ -6,25 +6,6 @@ Version **0.1.0-alpha.0**
 
 <!-- /fg:version -->
 
-<!-- fg:releasing -->
-
-## Releasing
-
-This module releases on its own. `0.1.0-alpha.0` is what main is working towards,
-not what is published — the version here is always the next one.
-
-1. **Publish it.** Run the *Publish* workflow from the Actions tab, picking the
-   dist tag. It refuses if that version is already on npm.
-2. **Move it on.** `pnpm release` — opens a pull request bumping this branch
-   to `0.1.0-alpha.1`, or `pnpm release --id rc` to change
-   identifier. A prerelease gets no maintenance branch; there is no released
-   line behind it yet.
-
-Every push to main publishes `@fairgarden/id@canary`. A canary is not a release and
-carries no promise; it is there so main can be tried without a checkout.
-
-<!-- /fg:releasing -->
-
 An OpenID Connect provider for FairGarden services, built on
 [oidc-provider](https://github.com/panva/node-oidc-provider). People sign in
 with a passkey, or with a code or link sent to their email, and decide
@@ -260,3 +241,30 @@ oidc-provider sends people to. `/` is a short introduction.
 declared in `lib/indicators.ts` and put into the path by
 `@fairgarden/indicators`; link with the `Link` from `lib/link.ts` rather than
 `next/link`.
+
+<!-- fg:releasing -->
+
+## Releasing
+
+This module releases on its own. `0.1.0-alpha.0` is what main is working towards,
+not what is published — the version here is always the next one. Its release
+notes are the top section of `CHANGELOG.md`, where every pull request adds a
+line linking itself.
+
+1. **Publish it.** Run the *Publish* workflow from the Actions tab, picking the
+   dist tag. It refuses if that version is already on npm. Once it is out, open
+   pull requests are held — their changelog check fails — so nothing is noted
+   under a version that has already shipped.
+2. **Start the next version.** `pnpm next-version` opens a pull request moving
+   main to `0.1.0-alpha.1` and starting its section of the
+   changelog, or `pnpm next-version --id rc` to change identifier. Merging it
+   lifts the hold. A prerelease gets no maintenance branch; there is no
+   released line behind it yet.
+
+A held pull request goes on once it is brought up to date with main and its
+line is moved into the new version's section.
+
+Every push to main publishes `@fairgarden/id@canary`. A canary is not a release and
+carries no promise; it is there so main can be tried without a checkout.
+
+<!-- /fg:releasing -->
