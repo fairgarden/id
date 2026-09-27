@@ -1,3 +1,4 @@
+import { createHash, timingSafeEqual } from 'node:crypto'
 import Provider, { type ClientMetadata, type Configuration, type KoaContextWithOIDC } from 'oidc-provider'
 import { resourcePath } from '@fairgarden/id/lib/api/group'
 import { accountClaims, findAccount } from './accounts.ts'
@@ -198,6 +199,29 @@ const build = (keys: KeySet): Provider => {
   // Behind Vercel, a load balancer or a monolith's rewrites, the protocol and
   // host come from X-Forwarded-*.
   provider.proxy = true
+  acceptPreviousSecrets(provider, config.services)
   provider.on('server_error', (_ctx, error) => console.error('[id] oidc-provider error', error))
   return provider
+}
+
+const digest = (value: string) => createHash('sha256').update(value).digest()
+
+/**
+ * Let each service still sign in with the secrets rotated out of it.
+ *
+ * oidc-provider knows one secret per client. Rotating it without anyone
+ * failing mid-sign-in means accepting the one before too, until the next
+ * rotation drops it: the service switches to the new one whenever it
+ * redeploys, before or after this does. Compared as digests, so neither the
+ * length nor the content shows in the time it takes.
+ */
+export const acceptPreviousSecrets = (provider: Provider, services: Service[]): void => {
+  const previous = new Map(services.map((service) => [service.id, service.previousSecrets.map(digest)]))
+  const { prototype } = provider.Client
+  const compare = prototype.compareClientSecret
+  prototype.compareClientSecret = async function (this: InstanceType<Provider['Client']>, actual: string) {
+    if (await compare.call(this, actual)) return true
+    const given = digest(actual)
+    return (previous.get(this.clientId) ?? []).some((secret) => timingSafeEqual(secret, given))
+  }
 }

@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { secretValues } from '@fairgarden/distribution/secrets'
 import { policySourceFromEnv, type PolicySource } from '@fairgarden/policy'
 
 /**
@@ -49,6 +50,11 @@ export interface Service {
   url: string | undefined
   /** Absent for a public client, which then has to use PKCE. */
   secret: string | undefined
+  /**
+   * Secrets it may still sign in with: the ones rotated out, which go on
+   * working until the next rotation drops them (`_SECRET="new old"`).
+   */
+  previousSecrets: string[]
   redirectUris: string[]
   postLogoutRedirectUris: string[]
   /**
@@ -257,11 +263,14 @@ export const parseServices = (
       throw new ConfigError(`FG_ID_SERVICE_${name}_CLAIMS needs a URL or CLAIMS_ENDPOINT to ask`)
     }
 
+    // Newest first: from its slots once rotated (secrets.ts), or as set by hand.
+    const [secret, ...previousSecrets] = secretValues(`FG_ID_SERVICE_${name}_SECRET`, source)
     services.push({
       id: get('ID') ?? name.toLowerCase().replace(/_/g, '-'),
       name: get('NAME') ?? titleCase(name),
       url,
-      secret: get('SECRET'),
+      secret,
+      previousSecrets,
       redirectUris,
       postLogoutRedirectUris,
       claims,
@@ -283,6 +292,56 @@ export const parseServices = (
   }
 
   return services
+}
+
+/** What an app mounted beside this one declares, to be signed in to it. */
+interface IdClientDeclaration {
+  clientId?: string
+  name?: string
+  claims?: string
+}
+
+/**
+ * The apps a monolith mounts beside this one: each one's mount, and the
+ * `fairgarden` part of its package.json. Written out in full for the same
+ * reason as `MONOLITH_MOUNTS`.
+ */
+const mountedApps = (): Record<string, { mount: string; fairgarden?: { idClient?: IdClientDeclaration } }> => {
+  try {
+    return JSON.parse(process.env.MONOLITH_APPS ?? '{}')
+  } catch {
+    return {}
+  }
+}
+
+/**
+ * Defaults for `FG_ID_SERVICE_*`: every app mounted alongside that declares
+ * itself a client of this service (`fairgarden.idClient`), at its mount on
+ * this origin. So a monolith enrols its own apps, and follows them to any
+ * domain — a preview's too. The environment still wins, variable by variable,
+ * and the secret is always the environment's.
+ */
+export const mountedServiceDefaults = (base: string, apps = mountedApps()): Record<string, string> => {
+  const defaults: Record<string, string> = {}
+  for (const [pkg, { mount, fairgarden }] of Object.entries(apps)) {
+    const client = fairgarden?.idClient
+    if (!client || pkg === PACKAGE_NAME) continue
+    const id = client.clientId ?? mount.replace(/^\//, '')
+    if (!id) continue
+    const prefix = `FG_ID_SERVICE_${id.toUpperCase().replace(/-/g, '_')}`
+    defaults[`${prefix}_URL`] = `${base}${mount}`
+    defaults[`${prefix}_ID`] = id
+    if (client.name) defaults[`${prefix}_NAME`] = client.name
+    if (client.claims) defaults[`${prefix}_CLAIMS`] = client.claims
+  }
+  return defaults
+}
+
+/** The environment over `defaults`, where it says anything. */
+const overDefaults = (defaults: Record<string, string>): Record<string, string | undefined> => {
+  const merged: Record<string, string | undefined> = { ...defaults }
+  for (const [key, value] of Object.entries(process.env)) if (value?.trim()) merged[key] = value
+  return merged
 }
 
 /** `FG_ID_JWKS` as JSON, or as base64url JSON for environments that mangle it. */
@@ -326,7 +385,8 @@ export const getConfig = (): Config => {
   if (cached) return cached
 
   const mount = mountPath()
-  const issuer = `${publicUrl()}${mount}`
+  const base = publicUrl()
+  const issuer = `${base}${mount}`
   const { origin, hostname } = new URL(issuer)
   const brandName = env('FG_ID_NAME') ?? 'Fair Garden'
   const smtpUrl = env('FG_ID_SMTP_URL')
@@ -361,7 +421,7 @@ export const getConfig = (): Config => {
       cookieSecrets: env('FG_ID_COOKIE_SECRETS') ? list(env('FG_ID_COOKIE_SECRETS')) : undefined,
       rotationDays,
     },
-    services: parseServices(),
+    services: parseServices(overDefaults(mountedServiceDefaults(base))),
     policy: policySettings(),
     policyLog: {
       retentionDays: Number(env('FG_ID_POLICY_LOG_RETENTION_DAYS') ?? 400),

@@ -24,6 +24,7 @@
   "scripts": {
     "dev": "fg-dist policy use && next dev -p 3010",
     "build": "fg-dist policy use && next build",
+    "check-env": "fg-dist env check --build",
     "start": "next start",
     "lint": "eslint",
     "canary": "fg-dist canary",
@@ -42,11 +43,13 @@
     "policy:log": "node lib/server/cli.ts policy log",
     "changelog": "fg-dist changelog",
     "dist": "fg-dist",
-    "next-version": "fg-dist next-version"
+    "next-version": "fg-dist next-version",
+    "migrate": "fg-dist migrate --build"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",
     "@electric-sql/pglite-socket": "^0.2.11",
+    "@fairgarden/distribution": "^0.1.0-alpha.7",
     "@fairgarden/indicators": "^0.1.0-alpha.0",
     "@fairgarden/monolith": "^0.1.0-alpha.0",
     "@fairgarden/policy": "^0.1.0-alpha.0",
@@ -68,7 +71,6 @@
   },
   "devDependencies": {
     "@fairgarden/design": "^0.1.0-alpha.0",
-    "@fairgarden/distribution": "^0.1.0-alpha.6",
     "@material-symbols/font-600": "^0.47.4",
     "@playwright/test": "^1.63.0",
     "@react-aria/optimize-locales-plugin": "^2.0.2",
@@ -88,5 +90,28 @@
     "typescript": "^6.0.3",
     "vitest": "^5.0.1"
   },
-  "packageManager": "pnpm@10.28.0+sha512.05df71d1421f21399e053fde567cea34d446fa02c76571441bfc1c7956e98e363088982d940465fd34480d4d90a0668bc12362f8aa88000a64e83d0b0e47be48"
+  "packageManager": "pnpm@10.28.0+sha512.05df71d1421f21399e053fde567cea34d446fa02c76571441bfc1c7956e98e363088982d940465fd34480d4d90a0668bc12362f8aa88000a64e83d0b0e47be48",
+  "fairgarden": {
+    "migrations": {
+      "directory": "drizzle",
+      "table": "id_migrations",
+      "lock": 7031000001,
+      "database": [
+        "FG_ID_DATABASE_URL",
+        "DATABASE_URL",
+        "POSTGRES_URL"
+      ]
+    },
+    "env": {
+      "FG_ID_SMTP_URL": {
+        "description": "The SMTP server sign-in codes are emailed through; without it, nobody can sign in by email.",
+        "required": "deployed",
+        "sensitive": true,
+        "example": "smtps://user:password@smtp.example.com:465",
+        "unless": [
+          "FG_ID_MOCK_EMAIL"
+        ]
+      }
+    }
+  }
 }

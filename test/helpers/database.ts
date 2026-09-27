@@ -3,7 +3,7 @@ import { PGlite } from '@electric-sql/pglite'
 import { PGLiteSocketServer } from '@electric-sql/pglite-socket'
 import pg from 'pg'
 import { afterAll, beforeAll } from 'vitest'
-import { migrate } from '@fairgarden/id/lib/server/migrator'
+import { declaredMigrations, migrate } from '@fairgarden/distribution/migrations'
 
 export const ROOT = path.resolve(import.meta.dirname, '..', '..')
 
@@ -26,7 +26,10 @@ export const useDatabase = ({ migrated = true } = {}) => {
     // One connection, as with the embedded database: PGlite is one session.
     process.env.FG_ID_DATABASE_POOL_SIZE = '1'
     database.pool = new pg.Pool({ connectionString: database.url, max: 1 })
-    if (migrated) await migrate(database.pool, path.join(ROOT, 'drizzle'))
+    if (migrated) {
+      const migrations = declaredMigrations(ROOT)!
+      await migrate(database.pool, migrations.directory, migrations)
+    }
   })
 
   afterAll(async () => {

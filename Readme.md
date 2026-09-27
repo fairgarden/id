@@ -158,8 +158,13 @@ pnpm db:studio
 drizzle-kit writes each migration forward; its rollback is the hand-written
 `<tag>.down.sql` beside it, which `db:generate` leaves as a stub. Migrations
 run in order, one transaction each, under a lock, and one edited after it ran
-is refused. A real database is only migrated by `db:migrate`, so a deployment
-never changes its schema by surprise; on Vercel, run it before `next build`.
+is refused. A real database is migrated by the build that deploys it —
+`pnpm migrate`, which is [`fg-dist migrate`][migrate] and runs after
+`next build` — or by hand with `db:migrate`, and never at start-up, so a
+deployment never changes its schema by surprise. Every migration has to work
+with the release before it too: a Vercel rollback runs no build.
+
+[migrate]: https://github.com/fairgarden/distribution/blob/main/docs/app/commands/migrate/page.mdx
 
 ## Keys
 
@@ -218,8 +223,9 @@ same policy: members' are in `apps/members/policies`.
 
 ## Deploying on Vercel
 
-1. Connect Neon, which sets `DATABASE_URL`, and run `pnpm db:migrate` as part
-   of the build.
+1. Connect Neon, which sets `DATABASE_URL`. The build migrates it: run
+   `pnpm build && pnpm migrate`, or the distribution's own `pnpm build`, which
+   does both.
 2. Set `FG_ID_URL` to the domain, `FG_ID_NAME`, `FG_ID_SMTP_URL` and
    `FG_ID_EMAIL_FROM`, and a group of `FG_ID_SERVICE_*` per service.
 3. Keys need nothing: they are created on first use.

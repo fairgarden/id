@@ -30,6 +30,16 @@ it ran is refused, as is running against a database that has migrations this
 version does not know. A migration without a written down file cannot be
 rolled back, and says so rather than half-trying.
 
-A real database is only migrated by `pnpm db:migrate`, never at start-up, so a
-deployment never changes its schema by surprise and a rollback is not undone
-by the next cold start.
+A real database is migrated by the build that deploys it, after `next build`
+— `pnpm migrate`, which is `fg-dist migrate --build` — or by hand with
+`pnpm db:migrate`. Never at start-up, so a deployment never changes its schema
+by surprise and a rollback is not undone by the next cold start. A Vercel
+rollback promotes an older deployment without building, so every migration
+has to work with the release before it as well: add a column before the code
+that needs it, and drop one a release after the code stops using it.
+
+Where the migrations are, the journal table they are recorded in
+(`id_migrations`) and the lock they run under are declared in `package.json`,
+under `fairgarden.migrations`. That is what lets a monolith migrate this app
+without loading it. The migrator itself is fg-dist's, the same one the embedded
+database is migrated by.

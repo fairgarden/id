@@ -4,7 +4,7 @@ import path from 'node:path'
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import pg from 'pg'
 import { getConfig } from './config.ts'
-import { migrate } from './migrator.ts'
+import { declaredMigrations, migrate, type Migrations } from '@fairgarden/distribution/migrations'
 import * as schema from './schema.ts'
 
 /**
@@ -53,9 +53,10 @@ export const db = async (): Promise<Database> => (await connection()).database
  * Connect, starting the embedded database when there is no other.
  *
  * `autoMigrate` applies pending migrations to the embedded database only. A
- * real one is migrated on purpose, with `pnpm db:migrate`, so a deployment
- * never changes its schema by surprise and a rollback is not undone by the
- * next cold start.
+ * real one is migrated by the build that deploys it (`fg-dist migrate`), or
+ * by hand with `pnpm db:migrate` — never at start-up, so a deployment never
+ * changes its schema by surprise and a rollback is not undone by the next
+ * cold start.
  */
 export const openConnection = async ({
   autoMigrate,
@@ -80,9 +81,9 @@ export const openConnection = async ({
   pool.on('error', (error) => console.error('[id] idle database client failed', error))
 
   if (embedded && autoMigrate) {
-    const directory = findMigrations()
-    if (directory) {
-      const applied = await migrate(pool, directory)
+    const migrations = findMigrations()
+    if (migrations) {
+      const applied = await migrate(pool, migrations.directory, migrations)
       if (applied.length > 0) console.info(`[id] applied ${applied.join(', ')}`)
     } else {
       console.warn('[id] could not find drizzle/ to migrate the embedded database; run pnpm db:migrate')
@@ -109,7 +110,7 @@ export const openConnection = async ({
  * server. Found from the working directory, which is this app's own or a
  * monolith's that depends on it; `FG_ID_MIGRATIONS_DIR` overrides.
  */
-const findMigrations = (): string | undefined => {
+const findMigrations = (): Migrations | undefined => {
   const cwd = process.cwd()
   // Development only: never traced into a build.
   const candidates = [
@@ -117,7 +118,7 @@ const findMigrations = (): string | undefined => {
     path.join(/* turbopackIgnore: true */ cwd, 'node_modules', '@fairgarden', 'id', 'drizzle'),
     path.join(/* turbopackIgnore: true */ cwd, 'drizzle'),
   ]
-  return candidates.find((candidate) => {
+  const found = candidates.find((candidate) => {
     if (!candidate || !existsSync(path.join(candidate, 'meta', '_journal.json'))) return false
     try {
       const pkg = JSON.parse(readFileSync(path.join(candidate, '..', 'package.json'), 'utf8'))
@@ -126,6 +127,9 @@ const findMigrations = (): string | undefined => {
       return false
     }
   })
+  // Its journal table and lock are declared beside it, in package.json.
+  const declared = found ? declaredMigrations(path.dirname(found)) : undefined
+  return declared && { ...declared, directory: found! }
 }
 
 interface Embedded {

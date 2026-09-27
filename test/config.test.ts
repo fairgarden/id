@@ -2,6 +2,26 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ConfigError, parseServices } from '@fairgarden/id/lib/server/config'
 
 describe('parseServices', () => {
+  it('reads a rotated secret from its slots: the one in use, then the one before', () => {
+    const [service] = parseServices({
+      FG_ID_SERVICE_MEMBERS_URL: 'https://members.example.com',
+      FG_ID_SERVICE_MEMBERS_SECRET_A: 'before',
+      FG_ID_SERVICE_MEMBERS_SECRET_B: 'now',
+      FG_ID_SERVICE_MEMBERS_SECRET_CURRENT: 'B',
+    })
+    expect(service.secret).toBe('now')
+    expect(service.previousSecrets).toEqual(['before'])
+  })
+
+  it('keeps the secrets rotated out of a service, newest first', () => {
+    const [service] = parseServices({
+      FG_ID_SERVICE_MEMBERS_URL: 'https://members.example.com',
+      FG_ID_SERVICE_MEMBERS_SECRET: 'newest older',
+    })
+    expect(service.secret).toBe('newest')
+    expect(service.previousSecrets).toEqual(['older'])
+  })
+
   it('names a service after its variables, and fills in its URLs', () => {
     const [service] = parseServices({
       FG_ID_SERVICE_EVENT_TICKETS_URL: 'https://tickets.example.com/',
@@ -75,7 +95,7 @@ describe('getConfig', () => {
   beforeEach(() => {
     vi.resetModules()
     for (const key of Object.keys(process.env)) {
-      if (key.startsWith('FG_ID_') || key.startsWith('FG_POLICY_') || key.startsWith('VERCEL') || key === 'MONOLITH_MOUNTS') {
+      if (key.startsWith('FG_ID_') || key.startsWith('FG_POLICY_') || key.startsWith('VERCEL') || key.startsWith('MONOLITH_')) {
         delete process.env[key]
       }
     }
@@ -85,6 +105,40 @@ describe('getConfig', () => {
   })
 
   const load = async () => (await import('@fairgarden/id/lib/server/config')).getConfig()
+
+  it('enrols the apps a monolith mounts beside it, at their mounts on its origin', async () => {
+    process.env.FG_ID_URL = 'https://example.com'
+    process.env.MONOLITH_MOUNTS = JSON.stringify({ '@fairgarden/id': '/id', '@fairgarden/members': '/members' })
+    process.env.MONOLITH_APPS = JSON.stringify({
+      '@fairgarden/id': { mount: '/id', fairgarden: {} },
+      '@fairgarden/members': {
+        mount: '/members',
+        fairgarden: { idClient: { clientId: 'members', name: 'Members', claims: 'membership' } },
+      },
+    })
+    process.env.FG_ID_SERVICE_MEMBERS_SECRET = 'shared'
+    const [members] = (await load()).services
+    expect(members).toMatchObject({
+      id: 'members',
+      name: 'Members',
+      url: 'https://example.com/members',
+      secret: 'shared',
+      redirectUris: ['https://example.com/members/auth/callback'],
+      claims: { membership: ['membership'] },
+      claimsEndpoint: 'https://example.com/members/api/v1alpha1/claimsreviews',
+    })
+  })
+
+  it('lets the environment say otherwise about a mounted app, variable by variable', async () => {
+    process.env.FG_ID_URL = 'https://example.com'
+    process.env.MONOLITH_APPS = JSON.stringify({
+      '@fairgarden/members': { mount: '/members', fairgarden: { idClient: { clientId: 'members', name: 'Members' } } },
+    })
+    process.env.FG_ID_SERVICE_MEMBERS_NAME = 'The Club'
+    const [members] = (await load()).services
+    expect(members.name).toBe('The Club')
+    expect(members.url).toBe('https://example.com/members')
+  })
 
   it('puts a monolith mount point into the issuer', async () => {
     process.env.FG_ID_URL = 'https://example.com/'
