@@ -39,7 +39,8 @@
     "test:e2e": "playwright test",
     "policy:build": "fg-policy build",
     "policy:test": "fg-policy test",
-    "policy:log": "node lib/server/cli.ts policy log"
+    "policy:log": "node lib/server/cli.ts policy log",
+    "changelog": "fg-dist changelog"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",
@@ -65,7 +66,7 @@
   },
   "devDependencies": {
     "@fairgarden/design": "^0.1.0-alpha.0",
-    "@fairgarden/distribution": "^0.1.0-alpha.0",
+    "@fairgarden/distribution": "^0.1.0-alpha.2",
     "@material-symbols/font-600": "^0.47.4",
     "@playwright/test": "^1.63.0",
     "@react-aria/optimize-locales-plugin": "^2.0.2",
