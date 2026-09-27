@@ -1,6 +1,7 @@
 {
   "name": "@fairgarden/id",
   "version": "0.1.0-alpha.0",
+  "license": "MIT",
   "type": "module",
   "repository": {
     "type": "git",
