@@ -6,7 +6,7 @@ import { and, eq, gte, like } from 'drizzle-orm'
 import { newestFirst, toEntry } from '@fairgarden/policy/drizzle'
 import { openConnection, type Connection } from './db.ts'
 import { describeKeys, generateSigningKey, rotateNow } from './keys.ts'
-import { migrate, readMigrations, rollback, status } from './migrator.ts'
+import { declaredMigrations, migrate, readMigrations, rollback, status } from '@fairgarden/distribution/migrations'
 import { getConfig, type JsonWebKeyWithKid } from './config.ts'
 import { policyDecisions } from './schema.ts'
 
@@ -16,7 +16,8 @@ import { policyDecisions } from './schema.ts'
  */
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..')
-const MIGRATIONS = path.join(ROOT, 'drizzle')
+// Where they are, and the journal table and lock they run under: package.json says.
+const MIGRATIONS = declaredMigrations(ROOT)!
 
 // The same files Next reads, highest precedence first; the environment wins.
 const loadEnv = () => {
@@ -59,7 +60,7 @@ const USAGE = `Usage:
 const commands: Record<string, (args: string[]) => Promise<void>> = {
   async 'db status'() {
     await withConnection(async ({ pool }) => {
-      const rows = await status(pool, MIGRATIONS)
+      const rows = await status(pool, MIGRATIONS.directory, MIGRATIONS)
       for (const row of rows) {
         const when = row.appliedAt ? row.appliedAt.toISOString() : ''
         const down = row.reversible ? '' : ' (no down migration)'
@@ -70,7 +71,7 @@ const commands: Record<string, (args: string[]) => Promise<void>> = {
 
   async 'db migrate'() {
     await withConnection(async ({ pool }) => {
-      const applied = await migrate(pool, MIGRATIONS)
+      const applied = await migrate(pool, MIGRATIONS.directory, MIGRATIONS)
       console.log(applied.length ? `Applied ${applied.join(', ')}` : 'Already up to date')
     })
   },
@@ -81,7 +82,7 @@ const commands: Record<string, (args: string[]) => Promise<void>> = {
       options: { steps: { type: 'string' }, to: { type: 'string' } },
     })
     await withConnection(async ({ pool }) => {
-      const rolledBack = await rollback(pool, MIGRATIONS, {
+      const rolledBack = await rollback(pool, MIGRATIONS.directory, MIGRATIONS, {
         steps: values.steps ? Number(values.steps) : undefined,
         to: values.to,
       })
@@ -98,8 +99,8 @@ const commands: Record<string, (args: string[]) => Promise<void>> = {
     if (result.status !== 0) process.exit(result.status ?? 1)
 
     // drizzle-kit only writes the way forward; leave a place for the way back.
-    for (const { tag, down } of readMigrations(MIGRATIONS)) {
-      const file = path.join(MIGRATIONS, `${tag}.down.sql`)
+    for (const { tag, down } of readMigrations(MIGRATIONS.directory)) {
+      const file = path.join(MIGRATIONS.directory, `${tag}.down.sql`)
       if (down || existsSync(file)) continue
       writeFileSync(
         file,
