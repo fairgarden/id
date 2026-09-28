@@ -1,0 +1,68 @@
+# Services
+
+Every service that signs in is a group of environment variables.
+
+The part
+after `FG_ID_SERVICE_` names it, and becomes its client ID, lowercased, with
+`_` as `-`:
+
+```bash
+FG_ID_SERVICE_EVENT_TICKETS_URL=https://tickets.example.com
+FG_ID_SERVICE_EVENT_TICKETS_SECRET=a-long-random-secret
+```
+
+is a confidential client `event-tickets`, redirecting to
+`https://tickets.example.com/auth/callback`.
+
+| Variable | Default |
+| --- | --- |
+| `_URL` | — where the service lives |
+| `_SECRET` | none: a public client. Rotated, it is `_SECRET_A` and `_SECRET_B`, with `_SECRET_CURRENT` saying which |
+| `_ID` | the name, lowercased |
+| `_NAME` | the name, in title case: shown on the consent screen |
+| `_REDIRECT_URIS` | `<URL>/auth/callback` |
+| `_LOGOUT_URIS` | `<URL>` |
+| `_CLAIMS` | none — see [claims from other services](/overview/claims) |
+| `_CLAIMS_ENDPOINT` | `<URL>/api/v1alpha1/claimsreviews` |
+| `_METADATA` | any other client metadata, as JSON |
+
+A service is found by its `_URL`, or by `_REDIRECT_URIS` for one without a
+site of its own, such as a native app. No other variable of a service may end
+in either.
+
+## In a monolith
+
+An app mounted beside this one enrols itself, when its `package.json` says it
+signs in here:
+
+```json
+"fairgarden": { "idClient": { "clientId": "members", "name": "Members", "claims": "membership" } }
+```
+
+It is then a service at its mount on this origin — `https://example.org/members`
+— with every other default following from that, a preview's own domain
+included. Only its `_SECRET` has to be set, which the app reads too, so the two
+cannot disagree. Any `FG_ID_SERVICE_<NAME>_*` variable still wins over what is
+worked out.
+
+## Rotating a secret
+
+A secret is never read back once it is set, so rotating one cannot keep the
+old value by reading it. It has two slots instead: `_SECRET_A` and `_SECRET_B`,
+with `_SECRET_CURRENT` — `A` or `B`, no secret — naming the one in use. A
+service may sign in with either. Rotating —
+[`pnpm dist env rotate`](https://github.com/fairgarden/distribution/blob/main/docs/app/commands/env/page.mdx)
+— writes a new value into the other slot and points at it, so a sign-in the
+service began just before still finishes, and it takes the new one when it next
+deploys. A plain `_SECRET` still works, set by hand.
+
+## Every client uses PKCE
+
+Confidential or not. A service without a secret is a public client, which can
+also only use PKCE.
+
+## Refused at start
+
+Two services with one client ID, a service claiming a scope this service
+answers for, or two services claiming the same scope: the service will not
+start, and says which.

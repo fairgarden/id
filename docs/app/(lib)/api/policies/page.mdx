@@ -1,0 +1,56 @@
+# Policies
+
+The [policy](/overview/policy) in force, for anyone to read — signed in or
+not — and every revision id has run.
+
+`GET` only.
+
+| | |
+| --- | --- |
+| `GET policies/current` | the `Policy` in force |
+| `GET policies/<revision>` | a revision id has run, such as a `PolicyDecision`'s `status.revision`; percent-encode its `+` |
+
+Reading it asks nothing of the policy, so it can be read even when the policy
+is refused — which is when it matters most.
+
+```json
+{
+  "kind": "Policy",
+  "metadata": { "name": "current" },
+  "spec": {
+    "engine": "bundle",
+    "revision": "2026.10.01+3f9a2c1e4b5d",
+    "commit": "058bf45…",
+    "organization": { "organization": "Example Club", "source": "https://example.org/club/policies" },
+    "layers": [
+      { "path": "apps/id/policies", "role": "base", "package": "@fairgarden/id", "version": "1.2.0" },
+      { "path": "policies", "role": "organization" }
+    ],
+    "packages": [
+      {
+        "name": "fairgarden.id",
+        "title": "Your account",
+        "related": [],
+        "decisions": [
+          { "name": "release", "path": "fairgarden/id/release", "title": "What a service may ask you for", "related": [] }
+        ],
+        "sources": [{ "path": "policies/fairgarden/id/privacy.rego", "layer": "policies", "text": "package fairgarden.id…" }]
+      }
+    ],
+    "settings": {}
+  },
+  "status": { "phase": "Active", "signature": null }
+}
+```
+
+`status.phase` is `Active`; `Refused`, with the `message` saying why, when a
+bundle's signature does not hold — unsigned, changed, or signed by someone
+else; `Unavailable` when the policy could not be read at all — what went wrong
+is logged, not published, since it can name private paths and URLs; or
+`Undisclosed`, when an OPA server holds the rules. Refused or unavailable,
+nothing the policy would decide is allowed. With
+the built-in rules, `spec.engine` is `builtin`, and the packages describe
+them, without sources.
+
+A past revision's `metadata.creationTimestamp` is when id first loaded it. id
+keeps each revision as soon as it loads it, and keeps trying until it has.

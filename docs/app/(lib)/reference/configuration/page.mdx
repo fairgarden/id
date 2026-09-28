@@ -1,0 +1,65 @@
+# Configuration
+
+Everything comes from the environment.
+
+Locally, `.env.development` has what
+`pnpm dev` needs, and `.env.development.local` overrides it.
+
+## Where it is served
+
+| Variable | |
+| --- | --- |
+| `FG_ID_URL` | The public URL, before any monolith mount point. Default: the Vercel deployment's domain, else `http://localhost:3010`. |
+| `FG_ID_NAME` | The name on every page, email and passkey prompt. Default `Fair Garden`. Read when the pages are built, too. |
+
+## Database
+
+| Variable | |
+| --- | --- |
+| `FG_ID_DATABASE_URL` | Any Postgres. `DATABASE_URL`, then `POSTGRES_URL`, are used when it is not set. |
+| `FG_ID_DATABASE_POOL_SIZE` | Default 5. |
+| `FG_ID_DATA_DIR` | The embedded database's files. Default `.data/id`. |
+| `FG_ID_EMBEDDED_DATABASE_PORT` | Default 54310. |
+
+## Email
+
+| Variable | |
+| --- | --- |
+| `FG_ID_SMTP_URL` | `smtp://` or `smtps://`, with credentials. |
+| `FG_ID_EMAIL_FROM` | Default `<FG_ID_NAME> <no-reply@<host>>`. |
+| `FG_ID_MOCK_EMAIL` | `true` to use the mock mailbox on a public host. |
+
+## Keys
+
+| Variable | |
+| --- | --- |
+| `FG_ID_KEY_ROTATION_DAYS` | Default 30. |
+| `FG_ID_JWKS` | Signing keys, instead of the database. |
+| `FG_ID_COOKIE_SECRETS` | Cookie secrets, newest first, instead of the database. |
+
+## Passkeys
+
+| Variable | |
+| --- | --- |
+| `FG_ID_PASSKEY_RP_ID` | A parent domain, to share passkeys across subdomains. |
+| `FG_ID_PASSKEY_ORIGINS` | More origins allowed to use them. |
+
+## Services
+
+`FG_ID_SERVICE_<NAME>_*`: see [Services](/overview/services).
+
+## Policy
+
+With none of these, id runs the policy its deployment was built with
+(`.policy/policies.tar.gz`, from `fg-dist policy use`), or its built-in rules
+when there is none. The `FG_POLICY_*` settings are shared by every service.
+
+| Variable | |
+| --- | --- |
+| `FG_POLICY_BUNDLE` | A policy from elsewhere than this deployment's build: a path or https URL, which must be signed. `none` for the built-in rules. |
+| `FG_POLICY_PUBLIC_KEY` | The organization's key, which that policy must be signed with: PEM, a JWK or a JWK Set. |
+| `FG_POLICY_ALLOW_UNSIGNED` | `true` to run an unsigned `FG_POLICY_BUNDLE`, for trying policy locally. |
+| `FG_POLICY_OPA_URL` | An OPA server to ask instead. |
+| `FG_ID_POLICY_PACKAGE` | Default `fairgarden/id`. |
+| `FG_ID_POLICY_LOG_RETENTION_DAYS` | How long decisions are kept. Default 400. |
+| `FG_ID_POLICY_LOG_STDOUT` | `true` to also write each decision to standard output, as a JSON line. |

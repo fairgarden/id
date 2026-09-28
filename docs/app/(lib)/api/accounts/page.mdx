@@ -1,0 +1,46 @@
+# Sessions and accounts
+
+Who is signed in, and their details.
+
+## `sessions/current`
+
+`GET` only, and never fails for want of a session:
+
+```json
+{
+  "kind": "Session",
+  "metadata": { "name": "current" },
+  "status": {
+    "authenticated": false,
+    "account": null,
+    "issuer": { "name": "Fair Garden", "url": "http://localhost:3010" },
+    "signInUrl": "http://localhost:3010/oidc/auth?client_id=fg-id-account&response_type=none&…",
+    "signOutUrl": null
+  }
+}
+```
+
+`signInUrl` signs in to the account page through the same interaction as any
+service, asking for no token at all (`response_type=none`).
+
+## `accounts/<name>`
+
+`GET` and `PATCH`; `me` is whoever is signed in, and nobody may read or change
+anyone else's.
+
+```json
+{
+  "kind": "Account",
+  "metadata": { "name": "d4618cea-…", "resourceVersion": "1790268749134" },
+  "spec": {
+    "displayName": "Ada Gardener",
+    "phoneNumber": "+64 21 555 0100",
+    "mailingAddress": { "streetAddress": "1 Garden Way", "locality": "Leafton", "country": "NZ", "formatted": "1 Garden Way\nLeafton\nNZ" },
+    "residentialAddress": null
+  },
+  "status": { "email": "ada@example.com", "emailVerified": true }
+}
+```
+
+The email address is `status`: it is proven, not set. `formatted` is derived
+and ignored when sent.
