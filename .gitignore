@@ -55,3 +55,8 @@ CLAUDE.md
 /e2e/.data
 /test-results
 /playwright-report
+
+# Next.js build dirs at any depth: the docs site's, the NEXT_DIST_DIR ones
+# parallel builds use, and any Turbopack writes outside docs/.
+.next
+.next-*

@@ -1,0 +1,54 @@
+# Signing in
+
+A service sends someone to `/oidc/auth`, as with any OpenID Provider.
+
+oidc-provider decides what it needs from them — a sign-in, or their consent —
+and starts an *interaction*: an `Interaction` in the [API](/api/interactions),
+bound to the browser by a cookie scoped to its path.
+
+The browser lands on `/interaction/<uid>`, a page that shows whatever the
+interaction's `status.phase` calls for, and follows `status.returnTo` back to
+oidc-provider when there is nothing left to ask.
+
+## With a passkey
+
+The page asks for a discoverable credential, so nobody has to say who they are
+first. Where the browser can, the passkey is also offered in the email field's
+autofill. A passkey sign-in reports `amr: ["pop", "mfa"]` when the
+authenticator verified the person, and `["pop"]` when it only saw they were
+there.
+
+Passkeys are WebAuthn through [@simplewebauthn](https://simplewebauthn.dev):
+the relying party ID is the host of `FG_ID_URL`, unless
+`FG_ID_PASSKEY_RP_ID` names a parent domain to share passkeys across
+subdomains.
+
+## With an email
+
+The fallback, and how an account comes to exist. One email carries a six
+digit code and a link, both for this sign-in only:
+
+- The **link** works only in the browser holding the interaction's cookie. A
+  mail scanner that opens it, or someone it is forwarded to, gets a page
+  saying to continue in the other browser, and nothing is used up. The token
+  it carries is read by the page and sent to the API, so merely fetching the
+  link does nothing, and it is taken out of the address bar at once.
+- The **code** is typed into the same sign-in. It gets five guesses.
+
+Only a hash of either is stored, each works once, both expire in 15 minutes,
+and only the newest email for a sign-in works. An address gets at most five
+emails an hour, and a sign-in one every 30 seconds.
+
+Email sign-ins report `amr: ["otp"]`.
+
+## After signing in
+
+Someone new is asked their name. Someone signing in by email without a passkey
+is offered to add one; they can say not now. Then oidc-provider carries on:
+straight back to the service if it was already allowed, or to the
+[consent screen](/overview/consent).
+
+## Signing out
+
+A service sends someone to `/oidc/session/end`. They are asked to confirm on
+`/sign-out`, then sent back to the service, or to `/signed-out`.

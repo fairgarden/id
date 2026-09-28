@@ -1,0 +1,111 @@
+# Policy
+
+Every authorization decision the id service makes goes through
+`lib/server/policy.ts`, which uses
+[@fairgarden/policy](https://github.com/fairgarden/policy): each decision is
+asked the way Open Policy Agent expects, so the built-in rules can be replaced
+by Rego without touching anything that asks, and every one is recorded.
+
+## The decisions
+
+**`authz`** — may this person do this to this resource? The input is a
+Kubernetes SubjectAccessReview's attributes:
+
+```json
+{
+  "user": { "name": "d4618cea-…", "authenticated": true },
+  "verb": "delete",
+  "resource": { "group": "id.fairgarden.org", "version": "v1alpha1", "resource": "passkeys", "name": "…", "owner": "d4618cea-…" }
+}
+```
+
+Answer `{ "allow": true }`, or `{ "allow": false, "reason": "…" }`.
+
+**`release`** — which of the scopes a service asked for may it be offered,
+and why not the others?
+
+```json
+{ "user": { "name": "…" }, "client": { "id": "events", "name": "Events" }, "scopes": ["openid", "residential_address"], "purpose": "Consent" }
+```
+
+`purpose` is `Preview` while the consent screen is shown, and `Consent` when
+the person's answer is recorded.
+
+Answer `{ "scopes": ["openid"], "reasons": { "residential_address": "Only Members may ask where you live." } }`.
+
+## Reasons are shown
+
+A person is never refused something unexplained. Every reason `release` gives
+is shown on the consent screen beside the scope it withholds, and so is every
+reason another service's own policy gives in its
+[claims review](/overview/claims).
+
+## The organization's rules
+
+id's decisions are the built-in rules until an organization says otherwise.
+`policies/id.rego` is those rules in Rego, with two places for an
+organization's own:
+
+```rego
+deny contains <reason>          # refuse a request id's rules would allow
+withheld[<scope>] := <reason>   # keep a scope from a service, and say why
+```
+
+The organization writes them in its distribution's `policies/`, in package
+`fairgarden.id` — `examples/privacy` has one, keeping residential addresses
+from every service but Members:
+
+```rego
+package fairgarden.id
+
+withheld["residential_address"] := "Only Members may ask where you live." if {
+	"residential_address" in input.scopes
+	input.client.id != "members"
+}
+```
+
+The distribution builds id's rules and the organization's into one policy
+when it deploys, and id's build takes a copy (`fg-dist policy use`), which it
+runs in process — no OPA server, nothing to publish. Built on its own, outside
+a distribution, id has no policy to copy, and its built-in rules decide. See
+[@fairgarden/policy](https://github.com/fairgarden/policy) for how the layers
+fit, and `FG_POLICY_*` in [configuration](/reference/configuration#policy) for policy
+from elsewhere.
+
+```bash
+pnpm policy:test        # id's own rules and tests
+fg-policy test --base policies --dir examples/privacy
+```
+
+## Anyone may read it
+
+`/policy` shows the policy in force to anyone, signed in or not: what each
+decision is for, in the organization's words; every rule, and whether it is
+id's or the organization's; the settings the rules read; the revision, and
+the commit it was built from. The API serves the same as
+[`policies/current`](/api/policies). Reading it asks nothing of the policy, so
+it can be read even when the policy is refused.
+
+## Every decision is recorded
+
+In `id_policy_decisions`, in OPA's own decision log format: the input, the
+result or the error, when, and the revision of the policy that answered —
+`builtin`, or the organization's, such as `2026.10.01+3f9a2c1e4b5d`. Every
+revision id runs is kept whole in `id_policy_revisions`, so each decision can
+be read beside the rules that made it: the account page links each decision
+the organization's policy made to `/policy?revision=…`. Decisions are kept
+`FG_ID_POLICY_LOG_RETENTION_DAYS` (400), and also written to standard output,
+for a log drain, with `FG_ID_POLICY_LOG_STDOUT=true`.
+
+```bash
+pnpm policy:log --subject d4618cea-… --since 30d
+```
+
+prints them as JSON lines, for an audit. People can read the decisions made
+about them too, as [`policydecisions`](/api/policydecisions).
+
+## Failing closed
+
+If the policy cannot be evaluated — it cannot be read, it was refused, the
+OPA server is down — the answer is no: the API says `503`, and nothing is
+released.

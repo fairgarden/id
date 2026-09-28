@@ -1,0 +1,66 @@
+# How the API works
+
+The pages talk to the id service through a REST API in the style of
+Kubernetes.
+
+Each service has its own, at its own domain.
+
+- `GET /api` — the versions served
+- `GET /api/v1alpha1` — every resource, and the verbs it takes
+- `/api/v1alpha1/<resource>[/<name>[/<subresource>]]` — the resources
+- `GET /api/openapi/v3` — the OpenAPI 3.1 document, generated from the same
+  Zod schemas that check requests
+
+`v1alpha1` means it may still change without notice. It will become
+`v1beta1`, then `v1`, as a Kubernetes API does on its way to stable.
+
+## Conventions
+
+Every object says what it is:
+
+```json
+{
+  "apiVersion": "id.fairgarden.org/v1alpha1",
+  "kind": "Passkey",
+  "metadata": { "name": "…", "creationTimestamp": "…" },
+  "spec": { "displayName": "Passkey synced from Mac" },
+  "status": { "deviceType": "multiDevice", "backedUp": true, "transports": ["internal"], "lastUsedTimestamp": null }
+}
+```
+
+`spec` is what the caller may set, `status` what the service observed. A
+collection is a `<Kind>List` of `items`. Every error is a `Status`:
+
+```json
+{ "apiVersion": "v1", "kind": "Status", "metadata": {}, "status": "Failure", "reason": "Conflict", "code": 409, "message": "…" }
+```
+
+with `details.causes` naming each invalid field, and `details.retryAfterSeconds`
+(and a `Retry-After` header) when told to wait.
+
+Updates are JSON merge patches (RFC 7386, `application/merge-patch+json`):
+`null` removes a field. Send `metadata.resourceVersion` and a patch is refused
+with 409 if the object changed since it was read.
+
+## Who is asking
+
+- **Interaction** resources are bound to the browser that started the
+  sign-in, by a cookie scoped to their path.
+- **Session** resources use the id service's own session cookie. Every request
+  is put to [policy](/overview/policy) first.
+
+Cookies authenticate every request, so a request that changes anything and
+comes from another site's page is refused.
+
+## Resources
+
+- [Interactions](/api/interactions) — a sign-in in progress
+- [Sessions and accounts](/api/accounts) — who is signed in, and their details
+- [Passkeys](/api/passkeys) — a person's passkeys
+- [Grants](/api/grants) — what each service may see
+- [Policy decisions](/api/policydecisions) — what policy decided about them
+- [Policies](/api/policies) — the policy in force, or one that was; anyone may read it
+- [Claims reviews](/api/claimsreviews) — what the id service asks other services
+
+`mockmessages` lists (`GET`) and empties (`DELETE`) the mock mailbox, and is
+only there while email is mocked.

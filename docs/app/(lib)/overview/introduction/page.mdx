@@ -1,0 +1,45 @@
+# What the service does
+
+The id service answers two questions for every other service: who is this,
+and what have they agreed to let you know?
+
+## The shape
+
+```
+apps/id/
+  app/                  the pages people see, and the REST API (app/api)
+  pages/api/oidc/       the OpenID Connect endpoints, served by oidc-provider
+  lib/server/           everything that runs on the server
+  lib/api/              the API's schemas, shared with the pages
+  drizzle/              database migrations, forward and back
+  policies/             authorization as Rego
+  test/  e2e/           unit tests (vitest) and browser tests (Playwright)
+```
+
+## What each piece does
+
+- **[Signing in](/overview/signing-in)** — a passkey, or a code and link by
+  email; new accounts are made by proving an email address.
+- **[What people share](/overview/consent)** — a consent screen per service,
+  sensitive scopes never ticked for the person, and an account page to take it
+  back.
+- **[Services](/overview/services)** — every service that signs in is a
+  group of `FG_ID_SERVICE_<NAME>_*` variables.
+- **[Claims from other services](/overview/claims)** — a service can own a
+  scope, and is asked for its claims each time someone shares them.
+- **[Policy](/overview/policy)** — every authorization decision in one
+  place, as Rego if you like, with reasons shown to the person.
+- **[Keys](/overview/keys)** — token signing keys and cookie secrets that
+  rotate by themselves.
+- **[Database](/overview/database)** — Drizzle over any Postgres, with
+  migrations you can roll back.
+- **[Deploying](/overview/deploying)** — Vercel and Neon, a monolith, and
+  white-labelling.
+- **[Testing](/overview/testing)** — unit and browser tests that need
+  nothing outside this repository.
+
+## What it does not do
+
+It does not keep profiles. A person's nickname, their membership, their
+preferences belong to the service they are about — the members service keeps
+membership, and hands it on through [claims reviews](/overview/claims).
